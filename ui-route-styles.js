@@ -17,34 +17,52 @@
 					elem.append($compile(html)(scope));
 					scope.routeStyles = {};
 					$rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
-						
 						// Remove old styles
-						if(fromState && fromState.views){
-							angular.forEach(fromState.views, function(view){
-								if(view.css){
-									if(!Array.isArray(view.css)){
-										view.css = [view.css];
-									}
-									angular.forEach(view.css, function(sheet){
-										delete scope.routeStyles[sheet];
-									});
+						if (fromState) {
+							if (fromState.css) {
+								if(!Array.isArray(fromState.css)){
+									fromState.css = [fromState.css];
 								}
-							});
+								angular.forEach(fromState.css, function(sheet){
+									delete scope.routeStyles[sheet];
+								});
+							}
+							if(fromState.views){
+								angular.forEach(fromState.views, function(view){
+									if(view.css){
+										if(!Array.isArray(view.css)){
+											view.css = [view.css];
+										}
+										angular.forEach(view.css, function(sheet){
+											delete scope.routeStyles[sheet];
+										});
+									}
+								});
+							}
 						}
-						
 						// Add new styles
-						if(toState && toState.views){
-							angular.forEach(toState.views, function(view){
-								if(view.css){
-									if(!Array.isArray(view.css)){
-										view.css = [view.css];
+						if (toState) {
+							if(toState.views){
+								angular.forEach(toState.views, function(view){
+									if(view.css){
+										if(!Array.isArray(view.css)){
+											view.css = [view.css];
+										}
+										angular.forEach(view.css, function(sheet){
+											scope.routeStyles[sheet] = sheet;
+										});
+
 									}
-									angular.forEach(view.css, function(sheet){
-										scope.routeStyles[sheet] = sheet;
-									});
-									
+								});
+							}
+							if (toState.css) {
+								if(!Array.isArray(toState.css)){
+									toState.css = [toState.css];
 								}
-							});
+								angular.forEach(toState.css, function(sheet){
+									scope.routeStyles[sheet] = sheet;
+								});
+							}
 						}
 					});
 				}
